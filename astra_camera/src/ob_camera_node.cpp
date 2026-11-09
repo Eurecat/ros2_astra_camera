@@ -382,10 +382,12 @@ void OBCameraNode::setupPublishers() {
       std::string name = stream_name_[stream_index];
       std::string topic = name + "/image_raw";
       auto image_qos = image_qos_[stream_index];
+      auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
+      qos.best_effort();
       auto image_qos_profile = getRMWQosProfileFromString(image_qos);
       image_publishers_[stream_index] = node_->create_publisher<sensor_msgs::msg::Image>(
           topic,
-          rclcpp::QoS(rclcpp::QoSInitialization::from_rmw(image_qos_profile), image_qos_profile));
+          qos);
       topic = name + "/camera_info";
       auto camera_info_qos = camera_info_qos_[stream_index];
       auto camera_info_qos_profile = getRMWQosProfileFromString(camera_info_qos);
